@@ -1,18 +1,33 @@
 <?php
 
-use App\Http\Controllers\TaskController;
+
 use App\Models\Task;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
 
-// Home Page - Display all tasks
-Route::get('/', function () {
-    $tasks = Task::all(); // Use plural for better readability
-    return view('home', ['tasks' => $tasks]);
+Route::get('/', function(){
+   //$tasks = Task::where('user_id', auth()->id())->get();
+    //0r
+
+    $tasks =[];
+    if (auth()->check()){
+        $tasks= auth()->user()->usersTasks()->latest()->get();
+    }
+    
+    return view('home', ['tasks' =>$tasks]);
 });
 
-// Create a Task
-Route::post('/create', [TaskController::class, 'create']);
+Route::post('/register',[UserController::class, 'register']);
 
-// Edit an Existing Task
-Route::put('/edit/{id}', [TaskController::class, 'edit']); // Added {id} parameter
-Route::put('/edit/{id}', [TaskController::class, 'update']); // Handle the update request
+Route::post('/logout', [UserController::class, 'logout']);
+
+Route::post('/login', [UserController::class, 'login']);
+
+//task routes
+
+Route::post('/create-task', [TaskController::class, 'createTask']);
+
+Route::get('/edit-task/{task}', [TaskController::class, 'showEditScreen']);
+Route::put('/edit-task/{task}', [TaskController::class, 'update']);
+Route::delete('/delete-task/{task}', [TaskController::class, 'delete']);

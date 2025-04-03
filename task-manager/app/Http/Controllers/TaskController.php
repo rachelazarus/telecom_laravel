@@ -5,71 +5,64 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
-
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+    public function createTask(Request $request){
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request): string
-    {
-        $incomingFields= $request->validate([
-            'title'=> ['required','min:3','max:255'],
-            'status'=>['required', 'in:pending,in_progress,completed'],
-            'due_date'=> ['required','date', 'after:today']
+        $incomingFields = $request->validate([
+            'title' => ['required', 'string', 'min:3', 'max:255'], 
+            'description' => ['nullable', 'string'], 
+            'status' => ['required', 'in:pending,in_progress,completed'], 
+            'due_date' => ['nullable', 'date', 'after:today']
         ]);
 
-        // $incomingFields['password'] - bcrypt($incomingFields['password']);
+        $incomingFields['title'] = strip_tags($incomingFields['title']);
+        $incomingFields['description'] = strip_tags($incomingFields['description']);
+        $incomingFields['user_id']= auth()->id();
         Task::create($incomingFields);
-
-        return "succesfully created task";
+        return redirect('/');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function showEditScreen(Task $task){
+
+        if (auth()->user()->id !== $task['user_id']) {
+
+            return redirect('/');
+
+        }
+
+        return view('edit-task', ['task'=>$task]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    public function update(Task $task, Request $request){
+        if (auth()->user()->id !== $task['user_id']) {
+
+            return redirect('/');
+
+        }
+
+        $incomingFields =$request->validate([
+            'title' => ['required', 'string', 'min:3', 'max:255'], 
+            'description' => ['nullable', 'string'], 
+            'status' => ['required', 'in:pending,in_progress,completed'], 
+            'due_date' => ['nullable', 'date', 'after:today']
+        ]);
+
+        $incomingFields['title'] = strip_tags($incomingFields['title']);
+        $incomingFields['description'] = strip_tags($incomingFields['description']);
+
+        $task->update($incomingFields);
+        return redirect('/');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
-    {
-        return view('edit',['task' =>$task]);
-    }
+    public function delete(Task $task){
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if (auth()->user()->id === $task['user_id']) {
+            $task->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        }
+        return redirect('/');
+
     }
-}
+} 
+
