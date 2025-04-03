@@ -31,3 +31,4 @@ Route::post('/create-task', [TaskController::class, 'createTask']);
 Route::get('/edit-task/{task}', [TaskController::class, 'showEditScreen']);
 Route::put('/edit-task/{task}', [TaskController::class, 'update']);
 Route::delete('/delete-task/{task}', [TaskController::class, 'delete']);
+Route::get('/task-detail/{task}', [TaskController::class, 'showTaskScreen']);

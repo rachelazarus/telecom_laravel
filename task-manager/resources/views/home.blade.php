@@ -41,22 +41,29 @@
         
     </div>
 
-    <div style="border: 3px solid black">
+    <div style="border: 3px solid black; padding: 20px;">
         <h2>All Tasks</h2>
-        @foreach ($tasks as $task )
-        <div style="background-color: gray; padding: 10px; margin: 10px; ">
-            <h3>{{$task['title']}}</h3>
-            {{$task['description']}}
-            <p><a href="/edit-task/{{$task->id}}">Edit</a></p>
-            <form action="/delete-task/{{$task->id}}" method="POST">
-            @csrf
-            @method('DELETE')
-            <button>DELETE</button>
+        @foreach ($tasks as $task)
+        <div style="background-color: gray; padding: 10px; margin: 10px;">
+            <h3>{{ $task['title'] }} by {{ $task->user->name }}</h3>
+            <p><strong>Description:</strong> {{ Str::limit($task['description'], 50, '...') }}</p>
+            <p><strong>Status:</strong> {{ ucfirst(str_replace('_', ' ', $task->status)) }}</p>
+            <p><strong>Due Date:</strong> {{ $task->due_date ? \Carbon\Carbon::parse($task->due_date)->format('F d, Y') : 'No due date' }}</p>
+    
+            <p>
+                <a href="/edit-task/{{ $task->id }}">Edit</a> |
+                <a href="/task-detail/{{ $task->id }}" style="color: blue; text-decoration: underline;">More Details</a>
+            </p>
+    
+            <form action="/delete-task/{{ $task->id }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button>DELETE</button>
             </form>
         </div>
-        
         @endforeach
     </div>
+    
 
 
     @else

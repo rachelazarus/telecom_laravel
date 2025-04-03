@@ -64,5 +64,15 @@ class TaskController extends Controller
         return redirect('/');
 
     }
+
+    public function showTaskScreen(Task $task){
+        if (auth()->user()->id !== $task['user_id']) {
+
+            return redirect('/');
+
+        }
+
+        return view('task-detail', ['task'=>$task]);
+    }
 } 
 
