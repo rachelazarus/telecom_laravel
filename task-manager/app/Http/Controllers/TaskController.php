@@ -7,23 +7,26 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    public function createTask(Request $request){
+    public function createTask(Request $request)
+    {
 
         $incomingFields = $request->validate([
-            'title' => ['required', 'string', 'min:3', 'max:255'], 
-            'description' => ['nullable', 'string'], 
-            'status' => ['required', 'in:pending,in_progress,completed'], 
-            'due_date' => ['nullable', 'date', 'after:today']
+            'title' => ['required', 'string', 'min:3', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', 'in:pending,in_progress,completed'],
+            'due_date' => ['nullable', 'date', 'after:today'],
         ]);
 
         $incomingFields['title'] = strip_tags($incomingFields['title']);
         $incomingFields['description'] = strip_tags($incomingFields['description']);
-        $incomingFields['user_id']= auth()->id();
+        $incomingFields['user_id'] = auth()->id();
         Task::create($incomingFields);
+
         return redirect('/');
     }
 
-    public function showEditScreen(Task $task){
+    public function showEditScreen(Task $task)
+    {
 
         if (auth()->user()->id !== $task['user_id']) {
 
@@ -31,48 +34,52 @@ class TaskController extends Controller
 
         }
 
-        return view('edit-task', ['task'=>$task]);
+        return view('edit-task', ['task' => $task]);
     }
 
-    public function update(Task $task, Request $request){
+    public function update(Task $task, Request $request)
+    {
         if (auth()->user()->id !== $task['user_id']) {
 
             return redirect('/');
 
         }
 
-        $incomingFields =$request->validate([
-            'title' => ['required', 'string', 'min:3', 'max:255'], 
-            'description' => ['nullable', 'string'], 
-            'status' => ['required', 'in:pending,in_progress,completed'], 
-            'due_date' => ['nullable', 'date', 'after:today']
+        $incomingFields = $request->validate([
+            'title' => ['required', 'string', 'min:3', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', 'in:pending,in_progress,completed'],
+            'due_date' => ['nullable', 'date', 'after:today'],
         ]);
 
         $incomingFields['title'] = strip_tags($incomingFields['title']);
         $incomingFields['description'] = strip_tags($incomingFields['description']);
 
         $task->update($incomingFields);
+
         return redirect('/');
     }
 
-    public function delete(Task $task){
+    public function delete(Task $task)
+    {
 
         if (auth()->user()->id === $task['user_id']) {
             $task->delete();
 
         }
+
         return redirect('/');
 
     }
 
-    public function showTaskScreen(Task $task){
+    public function showTaskScreen(Task $task)
+    {
         if (auth()->user()->id !== $task['user_id']) {
 
             return redirect('/');
 
         }
 
-        return view('task-detail', ['task'=>$task]);
+        return view('task-detail', ['task' => $task]);
     }
-} 
-
+}

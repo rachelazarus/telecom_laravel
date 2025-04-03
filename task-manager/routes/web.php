@@ -1,30 +1,29 @@
 <?php
 
-
-use App\Models\Task;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Models\Task;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/', function(){
-   //$tasks = Task::where('user_id', auth()->id())->get();
-    //0r
+Route::get('/', function () {
+    // $tasks = Task::where('user_id', auth()->id())->get();
+    // 0r
 
-    $tasks =[];
-    if (auth()->check()){
-        $tasks= auth()->user()->usersTasks()->latest()->get();
+    $tasks = [];
+    if (auth()->check()) {
+        $tasks = auth()->user()->usersTasks()->latest()->get();
     }
-    
-    return view('home', ['tasks' =>$tasks]);
+
+    return view('home', ['tasks' => $tasks]);
 });
 
-Route::post('/register',[UserController::class, 'register']);
+Route::post('/register', [UserController::class, 'register']);
 
 Route::post('/logout', [UserController::class, 'logout']);
 
 Route::post('/login', [UserController::class, 'login']);
 
-//task routes
+// task routes
 
 Route::post('/create-task', [TaskController::class, 'createTask']);
 

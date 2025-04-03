@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('title'); 
-            $table->longText('description')->nullable(); 
+            $table->string('title');
+            $table->longText('description')->nullable();
             $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending'); // Enum with default value
-            $table->date('due_date')->nullable(); 
+            $table->date('due_date')->nullable();
             $table->foreignId('user_id')->constrained();
         });
     }
