@@ -8,12 +8,60 @@
 </head>
 <body>
 
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 15px;
+        }
+    
+        .error-box {
+            background-color: #ff4d4d;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px 8px 0 0;
+            padding: 10px;
+            text-align: center;
+        }
+    
+        .error-list {
+            border: 2px solid #ff4d4d;
+            background-color: #ffe6e6;
+            color: #cc0000;
+            border-radius: 0 0 8px 8px;
+            padding: 15px;
+            list-style-type: disc;
+            margin: 0;
+        }
+    
+        .error-list li {
+            margin-left: 20px;
+            font-size: 14px;
+        }
+    </style>
+
     @auth
     <p>Hello, you are logged in.</p>
+
+
     <form action="/logout" method="POST">
     @csrf
     <button>Log out</button>
     </form>
+
+    <div class="error-container">
+    @if ($errors->any())
+        <div class="error-box">
+            ⚠️ Something went wrong...
+        </div>
+        <ul class="error-list">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
+</div>
+    
 
     <div style="border: 3px solid black">
         <h2>Create a New Task</h2>
@@ -67,6 +115,19 @@
 
 
     @else
+    <div class="error-container">
+        @if ($errors->any())
+            <div class="error-box">
+                ⚠️ Something went wrong...
+            </div>
+            <ul class="error-list">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+    </div>
+        
     <div style="border: 3px solid black">
         <h2>Register</h2> 
         <form action="/register" method="POST">
@@ -77,6 +138,7 @@
          <button>Register</button>
         </form>
     </div>
+    
     <div style="border: 3px solid black">
         <h2>Login</h2> 
         <form action="/login" method="POST">
