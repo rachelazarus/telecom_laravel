@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TaskController extends Controller
 {
-    public function createTask(Request $request):RedirectResponse
+    public function createTask(Request $request): RedirectResponse
     {
 
         $incomingFields = $request->validate([
@@ -27,7 +27,7 @@ class TaskController extends Controller
         return redirect('/');
     }
 
-    public function showEditScreen(Task $task): View | RedirectResponse
+    public function showEditScreen(Task $task): View|RedirectResponse
     {
 
         if (auth()->user()->id !== $task['user_id']) {
@@ -74,8 +74,8 @@ class TaskController extends Controller
 
     }
 
-    public function showTaskScreen(Task $task): View| RedirectResponse
-       {
+    public function showTaskScreen(Task $task): View|RedirectResponse
+    {
         if (auth()->user()->id !== $task['user_id']) {
 
             return redirect('/');

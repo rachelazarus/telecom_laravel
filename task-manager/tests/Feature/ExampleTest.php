@@ -16,7 +16,7 @@ test('a user can create a task', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->post('/create-task', [ // Fixed route
+        ->post('/create-task', [
             'title' => 'Test Task',
             'description' => 'Test Description',
             'status' => 'pending',
@@ -32,10 +32,10 @@ test('a user can create a task', function () {
 
 test('a user can edit their task', function () {
     $user = User::factory()->create();
-    $task = Task::factory()->for($user)->create(); // Ensuring factory usage
+    $task = Task::factory()->for($user)->create();
 
     $this->actingAs($user)
-        ->put("/edit-task/{$task->id}", [ // Fixed route
+        ->put("/edit-task/{$task->id}", [
             'title' => 'Updated Task',
             'description' => 'Updated Description',
             'status' => 'in_progress',
@@ -50,10 +50,10 @@ test('a user can edit their task', function () {
 
 test('a user can delete their task', function () {
     $user = User::factory()->create();
-    $task = Task::factory()->for($user)->create(); // Ensuring factory usage
+    $task = Task::factory()->for($user)->create();
 
     $this->actingAs($user)
-        ->delete("/delete-task/{$task->id}") // Fixed route
+        ->delete("/delete-task/{$task->id}")
         ->assertRedirect('/');
 
     $this->assertDatabaseMissing('tasks', [
@@ -64,4 +64,22 @@ test('a user can delete their task', function () {
 test('database connection is working', function () {
     $result = DB::select('SELECT 1');
     expect($result)->toBeArray();
+});
+
+test('tasks can be viewed', function () {
+    $user = User::factory()->create();
+    $task = Task::factory()->for($user)->create([
+        'title' => 'Test Task',
+        'description' => 'This is a test task.',
+        'status' => 'pending',
+        'due_date' => now()->addDays(5)->toDateString(),
+    ]);
+
+    
+    $response = $this->actingAs($user)->get('/');
+
+    
+    $response->assertStatus(200);
+    $response->assertSee($task->title);
+    $response->assertSee($task->description);
 });
