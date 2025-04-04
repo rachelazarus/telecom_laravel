@@ -26,4 +26,11 @@ Step 5: Run project.
   run "php artisan serve"
 
 
+PEST(run)
+1. composer remove phpunit/phpunit
+2. composer require pestphp/pest --dev --with-all-dependencies
+3. ./vendor/bin/pest --init
+4. ./vendor/bin/pest
+
+
 
