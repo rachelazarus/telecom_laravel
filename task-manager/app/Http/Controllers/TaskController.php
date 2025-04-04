@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TaskController extends Controller
 {
-    public function createTask(Request $request)
+    public function createTask(Request $request):RedirectResponse
     {
 
         $incomingFields = $request->validate([
@@ -25,7 +27,7 @@ class TaskController extends Controller
         return redirect('/');
     }
 
-    public function showEditScreen(Task $task)
+    public function showEditScreen(Task $task): View | RedirectResponse
     {
 
         if (auth()->user()->id !== $task['user_id']) {
@@ -37,7 +39,7 @@ class TaskController extends Controller
         return view('edit-task', ['task' => $task]);
     }
 
-    public function update(Task $task, Request $request)
+    public function update(Task $task, Request $request): RedirectResponse
     {
         if (auth()->user()->id !== $task['user_id']) {
 
@@ -60,7 +62,7 @@ class TaskController extends Controller
         return redirect('/');
     }
 
-    public function delete(Task $task)
+    public function delete(Task $task): RedirectResponse
     {
 
         if (auth()->user()->id === $task['user_id']) {
@@ -72,8 +74,8 @@ class TaskController extends Controller
 
     }
 
-    public function showTaskScreen(Task $task)
-    {
+    public function showTaskScreen(Task $task): View| RedirectResponse
+       {
         if (auth()->user()->id !== $task['user_id']) {
 
             return redirect('/');
